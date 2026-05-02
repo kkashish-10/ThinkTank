@@ -1,0 +1,72 @@
+# HMM Regime-Based Trading Bot Configuration
+# All configurable parameters for the trading system
+
+# Broker Configuration
+broker:
+  paper_trading: true
+  symbols:
+    - SPY
+    - QQQ
+    - AAPL
+    - MSFT
+    - AMZN
+    - GOOGL
+    - NVDA
+    - META
+    - TSLA
+    - AMD
+  timeframe: 1Day
+
+# HMM Configuration
+# Hidden Markov Model parameters for regime detection
+hmm:
+  n_candidates: [3, 4, 5, 6, 7]        # Candidate model orders to test
+  n_init: 10                             # Number of initializations for each model
+  covariance_type: full                  # Covariance type: full, tied, diag, spherical
+  min_train_bars: 252                    # Minimum training bars (1 year of daily data)
+  stability_bars: 3                      # Number of bars for regime stability check
+  flicker_window: 20                     # Window for flicker detection
+  flicker_threshold: 4                   # Max regime changes allowed in flicker window
+  min_confidence: 0.55                   # Minimum confidence for regime prediction
+
+# Strategy Configuration
+# Regime-based portfolio allocation parameters
+strategy:
+  low_vol_allocation: 0.95               # Allocation in low volatility regime
+  mid_vol_allocation_trend: 0.95         # Allocation in mid vol with uptrend
+  mid_vol_allocation_no_trend: 0.60      # Allocation in mid vol without trend
+  high_vol_allocation: 0.60              # Allocation in high volatility regime
+  low_vol_leverage: 1.25                 # Leverage multiplier in low vol regime
+  rebalance_threshold: 0.10              # Drift threshold for rebalancing (10%)
+  uncertainty_size_mult: 0.50            # Position size multiplier under uncertainty
+
+# Risk Management Configuration
+# Position sizing, leverage, and drawdown limits
+risk:
+  max_risk_per_trade: 0.01               # Max risk per trade (1% of account)
+  max_exposure: 0.80                     # Max total portfolio exposure (80%)
+  max_leverage: 1.25                     # Max account leverage (1.25x)
+  max_single_position: 0.15              # Max single position size (15%)
+  max_concurrent: 5                      # Max concurrent open positions
+  max_daily_trades: 20                   # Max trades per day
+  daily_dd_reduce: 0.02                  # Daily drawdown trigger to reduce size (2%)
+  daily_dd_halt: 0.03                    # Daily drawdown halt threshold (3%)
+  weekly_dd_reduce: 0.05                 # Weekly drawdown reduce trigger (5%)
+  weekly_dd_halt: 0.07                   # Weekly drawdown halt threshold (7%)
+  max_dd_from_peak: 0.10                 # Max drawdown from peak (10%)
+
+# Backtest Configuration
+backtest:
+  slippage_pct: 0.0005                   # Slippage as fraction (0.05%)
+  initial_capital: 100000                # Initial backtest capital ($100k)
+  train_window: 252                      # Training window (1 year)
+  test_window: 126                       # Test window (6 months)
+  step_size: 126                         # Walk-forward step size (6 months)
+  risk_free_rate: 0.045                  # Risk-free rate for Sharpe calculation (4.5%)
+
+# Monitoring Configuration
+monitoring:
+  dashboard_refresh_seconds: 5           # Dashboard refresh interval
+  alert_rate_limit_minutes: 15           # Alert rate limit window (minutes)
+  log_level: INFO                        # Logging level: DEBUG, INFO, WARNING, ERROR
+  log_file: logs/trading_bot.log         # Log file path
