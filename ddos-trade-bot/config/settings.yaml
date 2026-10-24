@@ -1,5 +1,52 @@
-# HMM Regime-Based Trading Bot Configuration
-# All configurable parameters for the trading system
+# Multi-Agent Trading System Configuration
+# All configurable parameters for agents, HMM regime detection, risk, HITL, TradingView, and broker
+
+# Multi-Agent Coordination Configuration
+multi_agent:
+  enabled: true
+  agents:
+    quant_regime: true
+    macro_sentiment: true
+    technical_momentum: true
+    cio_portfolio: true
+    risk_guardian: true
+    hitl_gateway: true
+    broker_execution: true
+    supervisor: true
+  min_agent_consensus: 0.65               # Minimum agreement score (0.0 to 1.0) to proceed
+
+# Human-in-the-Loop (HITL) Approval Gateway
+hitl:
+  enabled: true
+  channel: telegram                       # 'telegram' or 'whatsapp'
+  approval_timeout_seconds: 300           # 5 minutes to approve before auto-expiration
+  timeout_action: reject                  # 'reject' or 'hold' on timeout
+  max_slippage_pct: 0.003                 # 0.3% max price drift during HITL window before aborting
+  require_confirmation_for_paper: false   # Auto-execute in paper if true, or require tap
+  require_confirmation_for_live: true     # ALWAYS require manual button press for live trades
+  telegram:
+    poll_interval_seconds: 2
+
+# TradingView Integration Configuration
+tradingview:
+  enabled: true
+  webhook_host: "0.0.0.0"
+  webhook_port: 8080
+  webhook_path: "/webhook/tradingview"
+  webhook_passphrase: "thinktank_secure_passphrase"
+  allow_pine_signals: true                # Ingest alerts from TradingView Pine Script strategies
+  sync_alpaca_paper_ui: true              # Connect Alpaca Paper account directly to TradingView panel
+
+# Bear Market & Hedging Configuration
+bear_regime:
+  allow_cash_preservation: true           # Shift up to 80-100% to cash in severe turmoil
+  allow_inverse_etf_hedging: true         # Permit buying inverse ETFs (e.g. SH, PSQ)
+  inverse_etf_symbols:
+    - SH                                  # ProShares Short S&P 500
+    - PSQ                                 # ProShares Short QQQ
+  allow_direct_shorting: false            # Set true if margin account has locate privilege
+  max_short_exposure: 0.30                # Maximum 30% portfolio allocated to shorts/hedges
+  bear_confirmation_bars: 5               # Bars required to confirm persistent bear regime
 
 # Broker Configuration
 broker:
